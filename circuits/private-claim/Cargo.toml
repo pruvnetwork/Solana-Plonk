@@ -1,0 +1,42 @@
+[package]
+name        = "private-claim-circuit"
+version     = "0.1.0"
+description = "Sealed-score private lottery claim: Poseidon Merkle membership + score/nullifier derivation, halo2 v0.3.0 for native on-chain verification"
+edition.workspace      = true
+license.workspace      = true
+rust-version.workspace = true
+
+[[bin]]
+name = "gen-claim-proof"
+path = "src/bin/gen_claim_proof.rs"
+
+[lib]
+name = "private_claim_circuit"
+path = "src/lib.rs"
+
+[dependencies]
+halo2_proofs  = { workspace = true }
+halo2curves   = { workspace = true }
+
+halo2-solana-vk-host  = { path = "../../crates/vk-host" }
+halo2-solana-verifier = { path = "../../crates/verifier", features = ["std", "solana-syscalls"] }
+standard-plonk-circuit = { path = "../standard-plonk" }   # Keccak-BE transcript
+# Reuse the fully constrained width-3 Circom Poseidon chip + LE field helpers.
+code-integrity-circuit = { path = "../code-integrity" }
+
+sha3      = "0.10"
+hex       = "0.4"
+bs58      = "0.5"
+rand      = "0.8"
+rand_core = "0.6"
+anyhow    = "1"
+
+[dev-dependencies]
+light-poseidon = "0.2"
+ark-bn254-04   = { package = "ark-bn254", version = "0.4" }
+ark-ff-04      = { package = "ark-ff", version = "0.4" }
+# Mollusk 3-tx CU bench against target/deploy/halo2_solana_verifier_program.so
+mollusk-svm        = { workspace = true }
+solana-account     = "3.4"
+solana-pubkey      = "4"
+solana-instruction = "3"

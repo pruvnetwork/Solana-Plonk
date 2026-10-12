@@ -15,6 +15,7 @@ members = [
     "circuits/external-sp",
     "circuits/multi-phase-check",
     "circuits/code-integrity",
+    "circuits/private-claim",
     "programs/verifier-program",
     "programs/g1-msm-bench",
     "programs/reward-pool",

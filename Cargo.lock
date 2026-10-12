@@ -3235,6 +3235,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "private-claim-circuit"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ark-bn254 0.4.0",
+ "ark-ff 0.4.2",
+ "bs58",
+ "code-integrity-circuit",
+ "halo2-solana-verifier",
+ "halo2-solana-vk-host",
+ "halo2_proofs",
+ "halo2curves",
+ "hex",
+ "light-poseidon 0.2.0",
+ "mollusk-svm",
+ "rand 0.8.6",
+ "rand_core 0.6.4",
+ "sha3 0.10.9",
+ "solana-account",
+ "solana-instruction",
+ "solana-pubkey 4.2.0",
+ "standard-plonk-circuit",
+]
+
+[[package]]
 name = "proc-macro-crate"
 version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

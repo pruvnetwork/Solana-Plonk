@@ -29,6 +29,10 @@ probe-read-proof = []
 # each stage. Produces a per-stage CU breakdown in the program log.
 stage-trace = []
 cu-trace = ["halo2-solana-verifier/cu-trace"]
+# Refuse any data account whose KZG G1/G2 points differ from the pinned Perpetual
+# Powers of Tau SRS (src/pinned_srs.rs). Required for any deployment whose
+# VerifiedRecord gates value: vk_hash does not cover the SRS.
+pinned-srs = []
 
 [dependencies]
 # `alloc` feature wires up the default allocator + panic handler used by

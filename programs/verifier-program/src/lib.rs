@@ -30,6 +30,9 @@ extern crate alloc;
 
 use halo2_solana_verifier::{kzg::KzgVk, verify, curve::{G1, G2}};
 
+#[cfg(feature = "pinned-srs")]
+mod pinned_srs;
+
 const MAGIC: &[u8; 8] = b"GLDN0001";
 const G1_LEN: usize = 64;
 const G2_LEN: usize = 128;
@@ -40,6 +43,8 @@ pub mod errors {
     pub const VK_OUT_OF_BOUNDS:   u32 = 0x101;
     pub const PROOF_OUT_OF_BOUNDS: u32 = 0x102;
     pub const KZG_OUT_OF_BOUNDS:  u32 = 0x103;
+    /// `pinned-srs`: the data account's KZG points are not the pinned SRS.
+    pub const SRS_NOT_PINNED:     u32 = 0x104;
     pub const VERIFIER_REJECTED:  u32 = 0x200;
     pub const VERIFIER_ERROR:     u32 = 0x201;
     /// 2-tx split: stage_state account bytes did not deserialize into a
@@ -117,6 +122,16 @@ fn parse_instruction(data: &[u8])
     let mut g2_tau_bytes = [0u8; G2_LEN];
     g2_tau_bytes.copy_from_slice(&data[cur..cur + G2_LEN]);
     cur += G2_LEN;
+
+    // The SRS is not covered by vk_hash, so a caller-chosen tau would let any
+    // statement verify. PRUV deployments pin it to the Perpetual Powers of Tau points.
+    #[cfg(feature = "pinned-srs")]
+    if g1_one_bytes != pinned_srs::PINNED_G1_ONE
+        || g2_one_bytes != pinned_srs::PINNED_G2_ONE
+        || g2_tau_bytes != pinned_srs::PINNED_G2_TAU
+    {
+        return Err(errors::SRS_NOT_PINNED);
+    }
 
     // v1.5: optional public-inputs suffix `[n_pi: u32 LE | pi: 32 B × n_pi]`.
     // v1.0 payloads (no PIs) end exactly here; we treat both layouts as valid.
